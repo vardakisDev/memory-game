@@ -32,6 +32,7 @@ namespace WindowsFormsApp3
                 Console.WriteLine(item);
             }
 
+
         }
 
         //return all pictures boxes that exisit in this form
@@ -122,9 +123,10 @@ namespace WindowsFormsApp3
         private void HideImages()
         {
             
-            foreach (var pic in pictureBoxes)
+            foreach (var pic in pictureBoxes.Where(x => x.Enabled ==true))
             {
                 pic.Image = Properties.Resources.h;
+                
             }
         }
 
@@ -183,20 +185,20 @@ namespace WindowsFormsApp3
             if(firstGuess == null)
             {
                 firstGuess = pic;
-                pic.Image = (Image)pic.Tag;
+                pic.Image = (System.Drawing.Image)pic.Tag;
                 return;
             }
 
             //if the firstguess is not null which means a picture is already clicked set the picture send oover the click event to display
             //set the image he pressed on to display the image contained in tag and not the questiion mark pic
-            pic.Image = (Image)pic.Tag;
+            pic.Image = (System.Drawing.Image)pic.Tag;
 
             //if the image clicked is the same as the firstguess of the user and the image clicked isnt the samme as the first guessed make both images disapear
             if(pic.Image == firstGuess.Image && pic != firstGuess)
             {   
                 //introduce a small delay to show first the image clicked by the user because if the image is matched correctly both of them will go invisible in 0 sec
                 await Task.Delay(200);
-                pic.Visible = firstGuess.Visible = false;
+                pic.Enabled = firstGuess.Enabled = false;
                 HideImages();
             }
             //else if the user fails to match the first guess with the current pic he clicked start the timer again reset the opened images and set first guess as null
