@@ -44,6 +44,8 @@ namespace WindowsFormsApp3
             this.pictureBox7 = new System.Windows.Forms.PictureBox();
             this.pictureBox8 = new System.Windows.Forms.PictureBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.listView1 = new System.Windows.Forms.ListView();
+            this.label5 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -56,7 +58,7 @@ namespace WindowsFormsApp3
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(396, 140);
+            this.textBox1.Location = new System.Drawing.Point(223, 142);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(253, 26);
             this.textBox1.TabIndex = 0;
@@ -64,7 +66,7 @@ namespace WindowsFormsApp3
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(254, 143);
+            this.label1.Location = new System.Drawing.Point(108, 142);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(83, 20);
             this.label1.TabIndex = 1;
@@ -82,7 +84,7 @@ namespace WindowsFormsApp3
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(396, 218);
+            this.button2.Location = new System.Drawing.Point(223, 211);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(253, 89);
             this.button2.TabIndex = 3;
@@ -94,7 +96,7 @@ namespace WindowsFormsApp3
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft YaHei UI", 22F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(366, 36);
+            this.label2.Location = new System.Drawing.Point(138, 20);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(338, 57);
             this.label2.TabIndex = 4;
@@ -186,11 +188,32 @@ namespace WindowsFormsApp3
             this.label4.Text = "Delete all images";
             this.label4.Click += new System.EventHandler(this.label4_Click);
             // 
+            // listView1
+            // 
+            this.listView1.HideSelection = false;
+            this.listView1.Location = new System.Drawing.Point(673, 117);
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(411, 287);
+            this.listView1.TabIndex = 15;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(657, 9);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(427, 82);
+            this.label5.TabIndex = 16;
+            this.label5.Text = "High Scores";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1108, 777);
+            this.ClientSize = new System.Drawing.Size(1159, 777);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.listView1);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.pictureBox7);
             this.Controls.Add(this.pictureBox8);
@@ -239,5 +262,7 @@ namespace WindowsFormsApp3
         private System.Windows.Forms.PictureBox pictureBox7;
         private System.Windows.Forms.PictureBox pictureBox8;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.Label label5;
     }
 }

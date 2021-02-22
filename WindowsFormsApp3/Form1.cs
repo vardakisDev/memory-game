@@ -8,15 +8,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WindowsFormsApp3.lib;
 
 namespace WindowsFormsApp3
 {
     public partial class Form1 : Form
     {
-        OpenFileDialog dialog = new OpenFileDialog();
+        private OpenFileDialog dialog = new OpenFileDialog();
         public static List<string> selectedImages = new List<string>();
-
-
+        private  DataTable dt;
+        private  DataView dv;
+        private List<User> users;
         private PictureBox[] pictureBoxes
         {
             get
@@ -48,6 +50,7 @@ namespace WindowsFormsApp3
             InitializeComponent();
             label3.Visible = false;
             label4.Visible = false;
+            users = Db.ReadHighScores();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -77,8 +80,15 @@ namespace WindowsFormsApp3
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Form2 form2 = new Form2();
-            form2.Show();
+            if (textBox1.Text != "")
+            {
+                Form2 form2 = new Form2(textBox1.Text);
+                form2.Show();
+            }
+            else
+            {
+                MessageBox.Show("Input a user name");
+            }
 
         }
 
@@ -87,8 +97,6 @@ namespace WindowsFormsApp3
             selectedImages.Clear();
             clearPictureBoxes();
             SelectImagesLabels();
-          
-
         }
 
         private void SelectImagesLabels()
@@ -106,6 +114,44 @@ namespace WindowsFormsApp3
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            iniateListView();
+            FillDataTable();
+            dv = new DataView(dt);
+            PopulateTableView(dv);
+        }
+
+        private void iniateListView()
+        {
+            listView1.View = View.Details;
+
+            listView1.Columns.Add("username", 75);
+            listView1.Columns.Add("score", 75);
+            listView1.Columns.Add("date", 110);
+
+            dt = new DataTable();
+            dt.Columns.Add("Username");
+            dt.Columns.Add("Score");
+            dt.Columns.Add("Date");
+        }
+
+        public void PopulateTableView(DataView dv)
+        {
+            listView1.Items.Clear();
+            foreach (DataRow row in dv.ToTable().Rows)
+            {
+                listView1.Items.Add(new ListViewItem(new String[] { row[0].ToString(), row[1].ToString(), row[2].ToString() }));
+            }
+
+
+
+        }
+
+        private void FillDataTable()
+        {   
+            foreach (var item in users)
+            {
+                dt.Rows.Add(item.name, item.timesClicked, item.date_time);
+            }
 
         }
     }

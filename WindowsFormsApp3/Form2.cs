@@ -7,125 +7,90 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WindowsFormsApp3.lib;
 
 namespace WindowsFormsApp3
 {
     public partial class Form2 : Form
     {
 
-        int time = 60;
-        int countTry = 0;
         Random rand = new Random();
-        bool allowClick = false;
+        public bool allowClick = false;
         PictureBox firstGuess;
         //the timer will count from 60 sec and go down each sec 
-        Timer timer = new Timer { Interval = 1000 };
-        Timer clickTimer = new Timer();
 
-
-        public Form2()
+        private Game game;
+        private IEnumerable<Bitmap> images;
+        private  string username ;
+        public Form2(string text)
         {
             InitializeComponent();
-            
-            foreach (var item in Form1.selectedImages)
-            {
-                Console.WriteLine(item);
-            }
-
+            game = new Game();
+            images = LoadImages.getImages();
+            username = text;
+            SetUp();
         }
+
+        protected void BindControls()
+        {
+            label2.DataBindings.Add(new Binding("Text", game, "countClicks", false, DataSourceUpdateMode.OnPropertyChanged));
+            label1.DataBindings.Add(new Binding("Text", game, "timeLabel",false,DataSourceUpdateMode.OnPropertyChanged));
+        }
+
+
+        private void SetUp()
+        {
+            BindControls();
+        }
+
+        private void startGame(object sender, EventArgs e)
+        {
+            allowClick = true;
+            //radnomly assing the pics to the picture boxes avaiable
+            game.ResetC_T();
+            ResetImage();
+            game.startGame();
+            button1.Enabled = false;
+        }
+
+
 
         //return all pictures boxes that exisit in this form
-        private PictureBox[] pictureBoxes
-        {
-            get 
-            {
-                return Controls.OfType<PictureBox>().ToArray(); 
-            }
-        }
-
-
-        //return all the images thar are in the recourses
-        private static IEnumerable<Bitmap> images
+        public  PictureBox[] pictureBoxes
         {
             get
-
-            {  
-                //if the user has selected images display return those
-                if (Form1.selectedImages.Count > 0) {
-                    List<Bitmap> images = new List<Bitmap>();
-                    foreach (var item in Form1.selectedImages)
-                    {
-                        images.Add(new Bitmap(item));
-                    }
-                    return images;
-                }
-                //return the already loaded pictures from recourses
-                return new Bitmap[]
-                {
-                    Properties.Resources.pic1,
-                    Properties.Resources.pic2,
-                    Properties.Resources.pic3,
-                    Properties.Resources.pic4,
-                    Properties.Resources.pic5,
-                    Properties.Resources.pic6,
-                    Properties.Resources.pic7,
-                    Properties.Resources.pic8,
-                    Properties.Resources.pic9,
-                   /* Properties.Resources.pic10*/
-
-                };
+            {
+                return Controls.OfType<PictureBox>().ToArray();
             }
         }
 
-    
 
-        //this timer will start the game and discrement by one each time the time ticks
-        private void startGameTimer()
-        {
-            timer.Start();
-            Console.Write("STARTGAMETIMER");
-            timer.Tick += delegate
-            {
-                time--;
-                if (time < 0)
-                {
-                    timer.Stop();
-                    MessageBox.Show("Out of time");
-                    ResetImage();
-                }
-                var ssTime = TimeSpan.FromSeconds(time);
-                label1.Text = "00:" + time.ToString();
-            };
-        }
-        //reset all images
         private void ResetImage()
         {
             foreach (var pic in pictureBoxes)
             {
                 pic.Tag = null;
-                pic.Visible = true;
+                pic.Enabled = true;
 
             }
             HideImages();
             setRandomImages();
 
         }
-        private void ResetGame()
+        public void ResetGame()
         {
             ResetImage();
-            time = 60;
-            timer.Start();
+            game.ResetC_T();
         }
         
 
         //makes all pictures visible as question mark h
-        private void HideImages()
+        public  void HideImages()
         {
             
             foreach (var pic in pictureBoxes.Where(x => x.Enabled ==true))
             {
-                pic.Image = Properties.Resources.h;
-                
+                pic.Image = Properties.Resources.h; 
             }
         }
 
@@ -163,23 +128,14 @@ namespace WindowsFormsApp3
         }
 
 
-        //hide all images allow images to be click and 
-        private void CLICKTIMER_TICK(object sender ,EventArgs e)
-        {
-            HideImages();
-            allowClick = true;
-            countTry++;
-            label2.Text = countTry.ToString();
-            //we stop the clickTimer because we want the picture first cliked (first guess of the user ) to be displayed
-            clickTimer.Stop();
-            
-        }
 
         private async void clickImage(object sender , EventArgs e)
         {
             //if he has already clicked
             if (!allowClick) { Console.Write("Hey i cant be clicked"); return; }
             var pic = (PictureBox)sender;
+
+
             //if the player hasnt open a card yet set the card he clicked as the first guess and retrun
             if(firstGuess == null)
             {
@@ -197,43 +153,43 @@ namespace WindowsFormsApp3
             {   
                 //introduce a small delay to show first the image clicked by the user because if the image is matched correctly both of them will go invisible in 0 sec
                 await Task.Delay(200);
-                pic.Enabled = firstGuess.Enabled = true;
+                pic.Enabled = firstGuess.Enabled = false;
                 HideImages();
             }
             //else if the user fails to match the first guess with the current pic he clicked start the timer again reset the opened images and set first guess as null
             else
             {
                 allowClick = false;
-                clickTimer.Start();
+                game.clickTimer.Start();
             }
+
+
             //reset first guess
             firstGuess = null;
             
-            if (pictureBoxes.Any(p => p.Visible)) return;
+            if (pictureBoxes.Any(p => p.Enabled==true)) return;
+
             MessageBox.Show("You win now try again");
+            this.saveScore();
             button1.Enabled = true;
-            timer.Stop();
-            ResetGame();
+            game.timer.Stop();
+            game.ResetC_T();
 
         }
-
-
-        private void startGame(object sender, EventArgs e)
+        private void saveScore()
         {
-            
-            allowClick = true;
-            //radnomly assing the pics to the picture boxes avaiable
-            setRandomImages();
-            //hide all the images
-            HideImages();
-            //start the game timer 
-            startGameTimer();
-            //set the interval of the clickTimer to 0.5 sec
-            clickTimer.Interval = 500;
-            //clicktimer on click
-            clickTimer.Tick += CLICKTIMER_TICK;
-            button1.Enabled = false;
+            User user = new User
+            {
+                name = username,
+                timesClicked = Int32.Parse(label2.Text),
+                timeToBeat = label1.Text
+            };
 
+            Db.SaveToDB(user.name, user.timesClicked, user.timeToBeat);
         }
+
+
     }
+
+
 }
