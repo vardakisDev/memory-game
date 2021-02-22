@@ -32,7 +32,6 @@ namespace WindowsFormsApp3
                 Console.WriteLine(item);
             }
 
-
         }
 
         //return all pictures boxes that exisit in this form
@@ -198,7 +197,7 @@ namespace WindowsFormsApp3
             {   
                 //introduce a small delay to show first the image clicked by the user because if the image is matched correctly both of them will go invisible in 0 sec
                 await Task.Delay(200);
-                pic.Enabled = firstGuess.Enabled = false;
+                pic.Enabled = firstGuess.Enabled = true;
                 HideImages();
             }
             //else if the user fails to match the first guess with the current pic he clicked start the timer again reset the opened images and set first guess as null
